@@ -1,0 +1,6 @@
+@LB.Api_HostAddress = http://localhost:5217
+
+GET {{LB.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

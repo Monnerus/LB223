@@ -1,0 +1,72 @@
+<div class="container">
+  <header>
+    <h1>Lagerbestand</h1>
+    <button class="btn-refresh" (click)="load()" [disabled]="loading()">
+      {{ loading() ? 'Lädt...' : 'Aktualisieren' }}
+    </button>
+  </header>
+
+  @if (message()) {
+    <div class="message" [class.error]="message()!.error">
+      {{ message()!.text }}
+    </div>
+  }
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Artikel</th>
+        <th>Bestand</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (a of articles(); track a.id) {
+        <tr>
+          <td>{{ a.id }}</td>
+          <td>{{ a.name }}</td>
+          <td>{{ a.quantity }}</td>
+          <td><button class="btn-book" (click)="openModal(a)">Buchen</button></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (showModal()) {
+  <div class="overlay" (click)="closeModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h2>{{ selectedArticle()?.name }}</h2>
+
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="type" value="Einbuchen"
+                 [checked]="bookingType() === 'Einbuchen'"
+                 (change)="bookingType.set('Einbuchen')">
+          Einbuchen
+        </label>
+        <label>
+          <input type="radio" name="type" value="Ausbuchen"
+                 [checked]="bookingType() === 'Ausbuchen'"
+                 (change)="bookingType.set('Ausbuchen')">
+          Ausbuchen
+        </label>
+      </div>
+
+      <div class="field">
+        <label>Menge</label>
+        <input type="number" min="1" [ngModel]="amount()" (ngModelChange)="amount.set($event)">
+      </div>
+
+      @if (message()) {
+        <div class="message error">{{ message()!.text }}</div>
+      }
+
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="closeModal()">Abbrechen</button>
+        <button class="btn-confirm" (click)="confirm()">Bestätigen</button>
+      </div>
+    </div>
+  </div>
+}

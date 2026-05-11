@@ -1,0 +1,41 @@
+# mise
+.mise.toml
+.mise.local.toml
+
+# .NET / ASP.NET Core
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.DotSettings.user
+TestResults/
+
+# NuGet
+*.nupkg
+*.snupkg
+project.lock.json
+packages/
+
+# Secrets
+appsettings.*.json
+!appsettings.Development.json
+.env
+*.env
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+yarn-error.log*
+
+# JetBrains Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
