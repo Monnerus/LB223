@@ -131,7 +131,7 @@ sequenceDiagram
 ## Voraussetzungen
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download)
-- [Node.js 24](https://nodejs.org/) + npm
+- [Node.js 24.15+](https://nodejs.org/) + npm 10.9.1+
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
 ---
