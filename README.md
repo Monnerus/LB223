@@ -28,22 +28,17 @@ Das Lagerbestandssystem ermöglicht es mehreren gleichzeitigen Benutzern, Artike
 
 ```mermaid
 graph TD
-    FE["Angular 21\nFrontend\n:4200"]
-    API["ASP.NET Core 10\nREST API\n:5000"]
-    DB["SQL Server\n(Docker)\n:1433"]
-
-    FE -->|"HTTP /api (Proxy)"| API
-    API -->|"EF Core"| DB
-
-    subgraph Backend ["Backend (3 Schichten)"]
-        PL["Presentation Layer\nControllers"]
-        BL["Business / Domain Layer\nEntities, Interfaces, Enums"]
-        DAL["Data Access Layer\nRepositories, DbContext"]
-        PL --> BL
-        BL --> DAL
+    FE["Angular 21 Frontend :4200"]
+    subgraph Backend ["Backend 3 Schichten"]
+        PL["Presentation Layer - Controllers"]
+        BL["Domain Layer - Entities, Enums"]
+        DAL["Data Access Layer - Repositories"]
+        PL --> BL --> DAL
     end
+    DB["SQL Server Docker :1433"]
 
-    API --- PL
+    FE -->|"HTTP /api"| PL
+    DAL -->|"EF Core"| DB
 ```
 
 ---
@@ -56,7 +51,7 @@ erDiagram
         int Id PK
         string Name
         int Quantity
-        byte[] RowVersion
+        bytes RowVersion
     }
     User {
         int Id PK
@@ -136,7 +131,7 @@ sequenceDiagram
 ## Voraussetzungen
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download)
-- [Node.js 24](https://nodejs.org/)
+- [Node.js 24](https://nodejs.org/) + npm
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
 ---
@@ -146,15 +141,14 @@ sequenceDiagram
 ### 1. Repository klonen
 
 ```bash
-git clone [Repository-URL]
+git clone https://github.com/Monnerus/LB223
 cd lb223
 ```
 
 ### 2. Datenbank starten
 
 ```bash
-docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=LB223_Dev!Pass" \
-  -p 1433:1433 --name lb223-sql -d mcr.microsoft.com/mssql/server:2022-latest
+docker compose up -d
 ```
 
 ### 3. Backend starten
