@@ -24,25 +24,6 @@ Das Lagerbestandssystem ermöglicht es mehreren gleichzeitigen Benutzern, Artike
 
 ---
 
-## Architektur
-
-```mermaid
-graph TD
-    FE["Angular 21 Frontend :4200"]
-    subgraph Backend ["Backend 3 Schichten"]
-        PL["Presentation Layer - Controllers"]
-        BL["Domain Layer - Entities, Enums"]
-        DAL["Data Access Layer - Repositories"]
-        PL --> BL --> DAL
-    end
-    DB["SQL Server Docker :1433"]
-
-    FE -->|"HTTP /api"| PL
-    DAL -->|"EF Core"| DB
-```
-
----
-
 ## Datenmodell (ERD)
 
 ```mermaid
@@ -85,49 +66,6 @@ Die vollständige interaktive Dokumentation ist über Swagger verfügbar: **`htt
 
 ---
 
-## Wichtige Abläufe
-
-### Login
-
-```mermaid
-sequenceDiagram
-    participant FE as Angular Frontend
-    participant API as ASP.NET Core API
-    participant DB as SQL Server
-
-    FE->>API: POST /api/auth/login {username, password}
-    API->>DB: SELECT User WHERE Username = ?
-    DB-->>API: User (PasswordHash)
-    API-->>API: BCrypt.Verify(password, hash)
-    API-->>FE: 200 OK {token}
-    FE-->>FE: Token in localStorage speichern
-```
-
-### Ausbuchen (Mehrbenutzer-Szenario)
-
-```mermaid
-sequenceDiagram
-    participant A as Benutzer A
-    participant API as API
-    participant DB as SQL Server
-    participant B as Benutzer B
-
-    A->>API: POST /api/articles/1/book {Ausbuchen, 1}
-    B->>API: POST /api/articles/1/book {Ausbuchen, 1}
-    API->>DB: BEGIN TRANSACTION (Serializable)
-    API->>DB: SELECT * FROM Articles WITH (UPDLOCK, ROWLOCK) WHERE Id = 1
-    Note over DB: Sperre gesetzt – Benutzer B wartet
-    API-->>API: Validierung: Quantity >= 1 ✓
-    API->>DB: UPDATE Quantity = 0, COMMIT
-    Note over DB: Sperre freigegeben
-    DB-->>API: Benutzer B erhält Quantity = 0
-    API-->>API: Validierung: 0 >= 1 ✗
-    API-->>B: 409 Conflict "Nicht genug Bestand. Verfügbar: 0"
-    API-->>A: 200 OK
-```
-
----
-
 ## Voraussetzungen
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download)
@@ -166,7 +104,7 @@ Migrationen und Seed-Daten (Artikel + Testbenutzer) werden beim Start automatisc
 ### 4. Frontend starten
 
 ```bash
-cd frontend/frontend
+cd frontend
 npm install
 npm start
 ```
